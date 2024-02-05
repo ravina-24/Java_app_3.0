@@ -73,6 +73,29 @@ pipeline{
                }
             }
         }
+
+                 
+        stage('Send Artifacts to jfrog'){
+         when { expression {  params.action == 'create' } }
+            steps{
+
+               dir('/var/lib/jenkins/workspace/demo/target') {
+   
+               rtUpload (
+                serverId: 'test_jfrog',
+                spec: '''{
+                      "files": [
+                        {
+                          "pattern": "*.jar",
+                           "target": "example-repo-local/"
+                        }
+                    ]
+                }'''
+              )
+                }
+               }
+            }
+        }
         stage('Docker Image Build'){
          when { expression {  params.action == 'create' } }
             steps{
